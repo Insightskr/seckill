@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--status：规定log4j 2 自身运行过程时输出哪个级别的日志，默认为 OFF，即关闭-->
+<Configuration status="OFF">
+    <Appenders>
+        <!--
+             console 代表往控制台输出
+             name 代表这个Console 的名字
+             target 的值为 SYSTEM_OUT 或 SYSTEM_ERR,规定输出文字的颜色（说法不严谨）
+             -->
+        <Console name="Console" target="SYSTEM_OUT">
+            <!-- PatternLayout规定输出日志的文字格式
+                 [%-5level]：代表输出等级，占五个占位符，- 代表左对齐。
+                 %d{HH:mm:ss.SSS}：代表输出时间
+                 %msg：代表输出的消息
+                 %n：代表换行
+                 -->
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] [%-5level] %logger{36} - %msg%n" />
+        </Console>
+    </Appenders>
+    <Loggers>
+        <!-- 日志信息输出的等级 -->
+        <Root level="INFO">
+            <!--规定该等级下使用哪些输出方式-->
+            <AppenderRef ref="Console" />
+        </Root>
+    </Loggers>
+</Configuration>

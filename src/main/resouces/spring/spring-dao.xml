@@ -1,0 +1,46 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring.xsd">
+    <!-- 引入数据库配置文件  -->
+    <context:property-placeholder location="classpath:db-config.properties" ignore-unresolvable="true"/>
+
+    <!-- 配置 c3p0 数据源 -->
+    <bean id="pooledDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <!-- 配置数据池属性 -->
+        <property name="jdbcUrl" value="${jdbc.url}"/>
+        <property name="driverClass" value="${jdbc.driver}"/>
+        <property name="user" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+
+        <!-- 配置连接池的私有属性 -->
+        <property name="maxPoolSize" value="30"/>
+        <property name="minPoolSize" value="10"/>
+        <!-- 获取链接超时时间 -->
+        <property name="checkoutTimeout" value="1000"/>
+        <!-- 获取连接失败后重试的次数 -->
+        <property name="acquireRetryAttempts" value="2"/>
+    </bean>
+
+    <!-- 整合 Mybatis -->
+    <!-- 自动创建出 sqlSessionFactory 对象 -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="pooledDataSource"/>
+        <!-- 指定全局配置文件的路径 -->
+        <property name="configLocation" value="classpath:mybatis-config.xml"/>
+        <!-- 扫描 entity 包,使用别名 -->
+        <property name="typeAliasesPackage" value="com.ins.seckill.entity"/>
+        <!-- 指定 mapper 配置文件的路径 -->
+        <property name="mapperLocations" value="classpath:mapper/*.xml"/>
+    </bean>
+
+    <!-- 将 Mybatis 所有的 mapper 接口的实现加入到 IOC 容器中，
+         也就是配置 mapper 扫描器，扫描所有的 mapper 接口的实现，让这些 mapper 能够自动注入
+         base-package 指定 mapper 所在的包   -->
+    <mybatis-spring:scan base-package="com.ins.seckill.dao"/>
+    <!-- 整合 Mybatis 结束-->
+</beans>

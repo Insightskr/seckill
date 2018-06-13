@@ -1,0 +1,30 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+
+    <!-- 配置视图解析器 -->
+    <!--<mvc:view-resolvers>-->
+        <!--<mvc:jsp view-class="org.springframework.web.servlet.view.JstlView"-->
+                 <!--prefix="/WEB-INF/pages/"-->
+                 <!--suffix=".jsp"/>-->
+    <!--</mvc:view-resolvers>-->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver" id="viewResolverJsp">
+        <!-- 在JSP中使用JSTL -->
+        <!--<property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>-->
+        <property name="prefix" value="/WEB-INF/pages/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+
+    <context:component-scan base-package="com.ins.seckill.web"/>
+
+    <!-- 开启静态资源的处理,也就是将 Spring MVC 不能处理的请求交给 Tomcat -->
+    <mvc:default-servlet-handler />
+    <!-- 支持 Spring MVC 的一些高级功能，使 requestmapping 注解生效，JSR303 校验、快捷ajax等-->
+    <mvc:annotation-driven />
+
+</beans>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!-- 在spring的xml配置文件中当有多个*.properties文件需要加载时,需要添加 ignore-unresolvable="true" 方可正常执行 -->
+    <context:property-placeholder location="classpath:redis-config.properties" ignore-unresolvable="true" />
+
+    <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+        <!-- 控制一个pool可分配多少个jedis实例 -->
+        <property name="maxTotal" value="${redis.maxTotal}"/>
+        <!-- 控制一个pool最多有多少个状态为idle(空闲)的jedis实例 -->
+        <property name="maxIdle" value="${redis.maxIdle}"/>
+        <!-- 表示当borrow一个jedis实例时，最大的等待时间，如果超过等待时间，则直接抛出JedisConnectionException -->
+        <property name="maxWaitMillis" value="${redis.maxWaitMillis}"/>
+        <!-- 是否在从池中取出连接前进行检验,如果检验失败,则从池中去除连接并尝试取出另一个 -->
+        <property name="testOnBorrow" value="${redis.testOnBorrow}"/>
+        <!-- 在空闲时检查有效性, 默认false -->
+        <property name="testOnReturn" value="${redis.testOnReturn}"/>
+    </bean>
+
+    <bean id="jedisPool" class="redis.clients.jedis.JedisPool">
+        <constructor-arg name="poolConfig" ref="jedisPoolConfig" />
+        <constructor-arg name="host" value="${redis.host}" />
+        <constructor-arg name="port" value="${redis.port}" type="int" />
+        <constructor-arg name="timeout" value="${redis.timeout}" type="int" />
+        <constructor-arg name="password" value="#{'${redis.password}'!=''?'${redis.password}':null}" />
+        <constructor-arg name="database" value="${redis.db.index}" type="int" />
+    </bean>
+
+    <context:component-scan base-package="com.ins.seckill.dao.cache"/>
+</beans>
